@@ -26,11 +26,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ inputs.release_tag || github.ref }}
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: '1.26.5'
           cache: false
@@ -68,14 +68,14 @@ jobs:
         os: [macos-15, macos-15-intel]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ needs.release.outputs.source }}
       - name: Build and test bottles from released binaries
         env:
           HOMEBREW_NO_AUTO_UPDATE: '1'
         run: GITHUB_REF_NAME="$RELEASE_TAG" bash scripts/release-bottles.sh build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: bottles-${{ matrix.os }}
           path: bottle-output/*
@@ -87,11 +87,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ needs.release.outputs.source }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           pattern: bottles-*
           merge-multiple: true
