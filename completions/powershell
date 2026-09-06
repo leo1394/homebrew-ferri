@@ -1,0 +1,30 @@
+Register-ArgumentCompleter -Native -CommandName ferri,ferri.exe -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    $elements = @($commandAst.CommandElements | Where-Object { $_.Extent.StartOffset -lt $cursorPosition })
+    $previous = if ($elements.Count -gt 1 -and $elements[-1].Extent.EndOffset -ge $cursorPosition) {
+        $elements[-2].Extent.Text
+    } else { $elements[-1].Extent.Text }
+    if ($previous -in @('--target', '-T')) {
+        $prefix = $wordToComplete.Trim("'", '"')
+        $parent = if ($prefix) { Split-Path -Path $prefix -Parent } else { '.' }
+        if (-not $parent) { $parent = '.' }
+        $leaf = if ($prefix) { Split-Path -Path $prefix -Leaf } else { '' }
+        if ($prefix.EndsWith('\') -or $prefix.EndsWith('/')) { $parent = $prefix; $leaf = '' }
+        Get-ChildItem -LiteralPath $parent -ErrorAction SilentlyContinue | Where-Object { $_.Name.StartsWith($leaf, [StringComparison]::OrdinalIgnoreCase) } | ForEach-Object {
+            $path = $_.FullName
+            if ($_.PSIsContainer) { $path += [IO.Path]::DirectorySeparatorChar }
+            $quoted = "'" + $path.Replace("'", "''") + "'"
+            [System.Management.Automation.CompletionResult]::new($quoted, $_.Name, 'ProviderItem', $path)
+        }
+    } elseif ($previous -eq '--url') {
+        return
+    } elseif ($previous -in @('--device', '-d')) {
+        ferri __devices 2>$null | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
+    } else {
+        '--target','--url','--android','--ios','--list','--device','--help','version','--version' | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
+        }
+    }
+}

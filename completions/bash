@@ -1,0 +1,16 @@
+_ferri() {
+    local cur="${COMP_WORDS[COMP_CWORD]}" prev="${COMP_WORDS[COMP_CWORD-1]}" item
+    COMPREPLY=()
+    case "$prev" in
+        --target|-T)
+            while IFS= read -r item; do COMPREPLY+=("$item"); done < <(compgen -f -- "$cur")
+            compopt -o filenames 2>/dev/null || true
+            return ;;
+        --url) return ;;
+        --device|-d)
+            while IFS= read -r item; do if [[ "$item" == "$cur"* ]]; then COMPREPLY+=("$item"); fi; done < <(ferri __devices 2>/dev/null)
+            return ;;
+    esac
+    COMPREPLY=( $(compgen -W '--target --url --android --ios --list --device --help version --version' -- "$cur") )
+}
+complete -o filenames -F _ferri ferri

@@ -1,0 +1,16 @@
+#compdef ferri
+_ferri() {
+    local -a devices
+    devices=("${(@f)$(ferri __devices 2>/dev/null)}")
+    _arguments \
+        '(-T --target)'{-T,--target}'[App package]:package:_files' \
+        '--url[Package or installation page URL]:URL:' \
+        '(--ios)--android[Choose Android]' \
+        '(--android)--ios[Choose iOS]' \
+        '(-d --device)'{-d,--device}'[Device ID]:device:($devices)' \
+        '(-l --list)'{-l,--list}'[List connected devices]' \
+        '(-h --help)'{-h,--help}'[Show help]' \
+        '(-v --version)'{-v,--version}'[Show version]' \
+        '1:action:(version)'
+}
+_ferri "$@"

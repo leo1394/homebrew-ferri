@@ -1,0 +1,1 @@
+AndroidManifest.axml is the binary XML fixture from github.com/shogo82148/androidbinary v1.0.5, testdata/AndroidManifest.xml. It exercises real compiled APK metadata. See ../../THIRD-PARTY-NOTICES.md for its MIT license.

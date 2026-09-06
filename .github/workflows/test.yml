@@ -1,0 +1,51 @@
+name: Test
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - run: go test ./...
+      - run: go vet ./...
+      - name: Unix installer and completion
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          go build -o bin/ferri .
+          bash -n install.sh
+          bash -n scripts/release-assets.sh
+          bash -n scripts/release-bottles.sh
+          ruby tests/bottle_metadata_test.rb
+          bash tests/completion_test.sh
+          bash tests/installer_test.sh
+          FERRI_INSTALL_DIR="$RUNNER_TEMP/ferri bin" FERRI_DATA_DIR="$RUNNER_TEMP/ferri share" bash install.sh --local
+          "$RUNNER_TEMP/ferri bin/ferri" --version
+      - name: Windows installer and completion
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          go build -o bin/ferri.exe .
+          ./tests/windows_test.ps1
+  homebrew:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Install prebuilt formula with no runtime dependencies
+        run: |
+          go run ./scripts/release
+          brew tap-new --no-git ferri/local
+          ruby -e 'text = File.read("Formula/ferri.rb"); text.gsub!(%r{https://github.com/leo1394/homebrew-ferri/releases/download/v[^/]+/}, "file://#{Dir.pwd}/dist/"); File.write(ARGV[0], text)' "$(brew --repository ferri/local)/Formula/ferri.rb"
+          if brew commands | grep -qx trust; then brew trust --formula ferri/local/ferri; fi
+          brew install ferri/local/ferri
+          brew test ferri/local/ferri

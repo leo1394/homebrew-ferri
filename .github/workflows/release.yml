@@ -1,0 +1,100 @@
+# publish-contract: go-binary-v1
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      bottles:
+        description: Build and publish macOS Homebrew bottles
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: ferri-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Validate tag and build deterministic binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF_TYPE" == tag ]]
+          [[ "$GITHUB_REF_NAME" == "v$(cat VERSION.txt)" ]]
+          [[ "$(git cat-file -t "refs/tags/$GITHUB_REF_NAME")" == tag ]]
+          go test ./...
+          go run ./scripts/release
+          git diff --exit-code -- Formula/ferri.rb
+      - name: Upload immutable release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/release-assets.sh dist/ferri_* dist/SHA256SUMS THIRD-PARTY-NOTICES.md
+  bottles:
+    needs: release
+    if: inputs.bottles
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test bottles from released binaries
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: '1'
+        run: bash scripts/release-bottles.sh build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bottles-${{ matrix.os }}
+          path: bottle-output/*
+          if-no-files-found: error
+  publish-bottles:
+    needs: bottles
+    if: inputs.bottles
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bottles-*
+          merge-multiple: true
+          path: bottle-output
+      - name: Validate and upload immutable bottles
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/release-bottles.sh publish
+      - name: Commit only the verified bottle Formula
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp Formula/ferri.rb "$RUNNER_TEMP/ferri-bottle.rb"
+          git restore Formula/ferri.rb
+          git fetch origin master
+          source=$(git rev-parse "refs/tags/$GITHUB_REF_NAME^{commit}")
+          changes=$(git diff --name-only "$source" origin/master)
+          [[ -z "$changes" || "$changes" == Formula/ferri.rb ]]
+          git show "$source:Formula/ferri.rb" | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/source-formula"
+          git show origin/master:Formula/ferri.rb | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/master-formula"
+          cmp "$RUNNER_TEMP/source-formula" "$RUNNER_TEMP/master-formula"
+          git checkout -B master origin/master
+          cp "$RUNNER_TEMP/ferri-bottle.rb" Formula/ferri.rb
+          if git diff --quiet -- Formula/ferri.rb; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/ferri.rb
+          git commit -m "Publish Ferri $GITHUB_REF_NAME macOS bottles"
+          git push origin HEAD:refs/heads/master
