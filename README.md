@@ -24,11 +24,8 @@ Ferri 的名字取自 **ferry（渡船）**：承载安装包，送达目标设�
 拿到一个安装包、连接测试设备、验证新版本——这是测试人员和开发人员每天都会重复的工作。Ferri 将不同平台的安装命令收敛到同一个入口，让你专注于应用本身。
 
 - **一个命令，多个平台**：在 macOS、Linux、Windows 上使用相同的 `ferri` 命令，支持 APK、APKS、AAB、IPA。
-- **连接异常时自动恢复**：Android 设备列表为空、目标设备离线或识别命令报错时，安装前自动重启 adb 一次并重新识别。
-- **选好设备，再安装**：单设备直接安装；多设备交互选择并确认，也可用设备 ID 精确指定。
 - **更新已有应用**：优先覆盖安装，保留本地数据。失败且检测到同 ID 应用时，提示数据丢失风险，确认后才卸载重装；默认不卸载。
-- **轻量上手**：独立可执行文件，无需预装 Python、Node.js 或 Go；缺少设备工具时，先询问再安装。
-- **少记参数，少敲路径**：支持参数、文件路径和设备 ID 补全，输错参数会给出近似提示。
+- **轻装上手**：独立可执行文件，无需预装 Python、Node.js 或 Go；缺少设备工具时，按需安装。
 
 ## 安装
 
@@ -45,7 +42,10 @@ brew update
 brew upgrade ferri
 ```
 
-### Linux / macOS
+### Bash (Linux / macOS)
+
+如果本机 Homebrew 版本过低，无法安装 Formula，可通过 Bash 构建并安装已发布
+版本：
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/leo1394/homebrew-ferri/master/install.sh -o /tmp/ferri-install.sh
@@ -118,16 +118,15 @@ ferri --url "https://www.pgyer.com/clobotics-rea-test" --android --device SERIAL
 | 任务 | 命令 |
 | --- | --- |
 | 安装 / 覆盖更新 APK | `ferri --target ./app.apk` |
+| 安装 IPA | `ferri --target ./app.ipa` |
+| 从 AAB 生成并安装 | `ferri --target ./app.aab` |
+| 安装 APKS | `ferri --target ./app.apks` |
 | 从链接安装 | `ferri --url "https://example.com/app.apk"` |
 | 选择合并页中的 Android 包 | `ferri --url "https://www.pgyer.com/clobotics-rea-test" --android` |
-| 安装 IPA | `ferri --target ./app.ipa` |
-| 安装 APKS | `ferri --target ./app.apks` |
-| 从 AAB 生成并安装 | `ferri --target ./app.aab` |
 | 列出连接的设备 | `ferri --list` |
 | 安装到指定设备 | `ferri --target ./app.apk --device SERIAL` |
-| 使用含空格的路径 | `ferri --target "./build outputs/app.apk"` |
 | 查看帮助 | `ferri --help` |
-| 查看版本 | `ferri version` 或 `ferri --version` |
+| 查看版本 | `ferri version` |
 
 支持短参数 `-T`、`-d`、`-l`、`-h`、`-v`。非交互环境连接多台设备时必须指定 `--device`；缺少工具时会报错，不会静默下载。
 
@@ -149,15 +148,6 @@ Download and install these tools? [y/N]:
 
 确认后下载到 `~/.ferri`，无需管理员权限，也不修改系统 PATH。**Java 和 bundletool 只在 AAB / APKS 场景需要。** 查看列表、帮助、版本及自动补全都不会下载工具。
 
-## 自动补全
-
-支持 **Bash、Zsh、Fish、PowerShell 7**：
-
-- 参数：`--target`、`--url`、`--android`、`--ios`、`--list`、`--device`、`--help`、`version`、`--version`。
-- 路径：在 `--target` 后补全文件和目录，包括含空格的路径。
-- 设备：在 `--device` 后补全可用设备 ID。
-
-Homebrew 会安装补全脚本；其他安装方式也附带对应脚本。按[补全配置](docs/usage.md#自动补全配置)启用即可。CMD 不提供 Ferri 自定义参数补全。
 
 ## 设备与安装说明
 

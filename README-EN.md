@@ -24,10 +24,9 @@ The name comes from **ferry**: carrying an app package to its destination device
 Get a build, connect a test device, verify the update. App testers and developers repeat this workflow every day. Ferri brings platform-specific installation commands into one familiar interface so you can focus on the app.
 
 - **One command across platforms:** use the same `ferri` command on macOS, Linux, and Windows for APK, APKS, AAB, and IPA packages.
-- **Choose the device before installing:** install directly with one device, select and confirm when several are connected, or specify an exact device ID.
 - **Update existing apps:** Try updating first to preserve local data. Only after a failure and a matching installed app does Ferri offer uninstall/reinstall, with a data-loss warning. The default is no.
 - **Start with less setup:** a standalone executable with no Python, Node.js, or Go runtime required. Missing device tools are installed only after confirmation.
-- **Type less:** complete options, file paths, and device IDs. Misspelled options get a nearby suggestion.
+
 
 ## Install
 
@@ -44,7 +43,10 @@ brew update
 brew upgrade ferri
 ```
 
-### Linux / macOS
+### Bash (Linux / macOS)
+
+If the installed Homebrew is too old to install the Formula, build and install
+the published release with Bash:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/leo1394/homebrew-ferri/master/install.sh -o /tmp/ferri-install.sh
@@ -117,16 +119,15 @@ Use either `--url` or `--target`. Quote URLs containing characters such as `&`. 
 | Task | Command |
 | --- | --- |
 | Install / update an APK | `ferri --target ./app.apk` |
-| Install from a URL | `ferri --url "https://example.com/app.apk"` |
-| Select Android from a merged page | `ferri --url "https://www.pgyer.com/clobotics-rea-test" --android` |
 | Install an IPA | `ferri --target ./app.ipa` |
 | Install an APKS archive | `ferri --target ./app.apks` |
 | Build and install from an AAB | `ferri --target ./app.aab` |
+| Install from a URL | `ferri --url "https://example.com/app.apk"` |
+| Select Android from a merged page | `ferri --url "https://www.pgyer.com/clobotics-rea-test" --android` |
 | List connected devices | `ferri --list` |
 | Install on a specific device | `ferri --target ./app.apk --device SERIAL` |
-| Use a path containing spaces | `ferri --target "./build outputs/app.apk"` |
 | Show help | `ferri --help` |
-| Show the version | `ferri version` or `ferri --version` |
+| Show the version | `ferri version` |
 
 Short options `-T`, `-d`, `-l`, `-h`, and `-v` are also supported. Non-interactive sessions with multiple devices must specify `--device`. Missing tools produce an error instead of a silent download.
 
@@ -150,15 +151,6 @@ Download and install these tools? [y/N]:
 
 Approved downloads go into `~/.ferri`, without administrator access or changes to the system PATH. **Java and bundletool are required only for AAB / APKS.** Device listing, help, version output, and completion never download tools.
 
-## Shell completion
-
-Supports **Bash, Zsh, Fish, and PowerShell 7**:
-
-- Options: `--target`, `--url`, `--android`, `--ios`, `--list`, `--device`, `--help`, `version`, `--version`.
-- Paths: complete files and directories after `--target`, including paths with spaces.
-- Devices: complete available device IDs after `--device`.
-
-Homebrew installs completion scripts; the standalone installers include them too. Follow the [completion setup](docs/usage-en.md#completion-setup) to enable them. CMD does not support Ferri's custom option completion.
 
 ## Devices and installation notes
 
