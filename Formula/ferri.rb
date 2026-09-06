@@ -4,6 +4,12 @@ class Ferri < Formula
   version "0.1.1"
   license "MIT"
 
+  bottle do
+    root_url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.1"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0fc7778f8205a2aa46e84e5fd5695dd7bf3aae9681c1459bbc867a455f0164b7"
+    sha256 cellar: :any_skip_relocation, sequoia:       "22084c001066ee4209bb030a56da60cdc0ff2ea8f01d551b4f4e12d4c734706a"
+  end
+
   head do
     url "https://github.com/leo1394/homebrew-ferri.git", branch: "master"
     depends_on "go" => :build
