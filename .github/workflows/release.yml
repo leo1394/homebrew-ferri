@@ -3,6 +3,10 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      release_tag:
+        description: Existing release tag to recover (empty uses the dispatch tag)
+        type: string
+        default: ""
       bottles:
         description: Build and publish macOS Homebrew bottles
         type: boolean
@@ -10,10 +14,14 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: ferri-release-${{ github.ref }}
+  group: ferri-release-${{ inputs.release_tag || github.ref_name }}
   cancel-in-progress: false
+env:
+  RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
 jobs:
   release:
+    outputs:
+      source: ${{ steps.validate.outputs.source }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,24 +29,36 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.release_tag || github.ref }}
       - uses: actions/setup-go@v5
         with:
           go-version: '1.26.5'
           cache: false
-      - name: Validate tag and build deterministic binaries
+      - name: Validate remote annotated tag
+        id: validate
         shell: bash
         run: |
           set -euo pipefail
-          [[ "$GITHUB_REF_TYPE" == tag ]]
-          [[ "$GITHUB_REF_NAME" == "v$(cat VERSION.txt)" ]]
-          [[ "$(git cat-file -t "refs/tags/$GITHUB_REF_NAME")" == tag ]]
+          fail() { echo "Error: $*" >&2; exit 1; }
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "Invalid release tag: $RELEASE_TAG"
+          [[ "$RELEASE_TAG" == "v$(cat VERSION.txt)" ]] || fail "Tag does not match VERSION.txt"
+          # Checkout may map the peeled commit to a local tag. Inspect a separate remote ref.
+          git fetch --no-tags origin "+refs/tags/$RELEASE_TAG:refs/ferri-release/tag"
+          [[ "$(git cat-file -t refs/ferri-release/tag)" == tag ]] || fail "Remote release tag must be annotated"
+          source=$(git rev-parse 'refs/ferri-release/tag^{commit}')
+          [[ "$source" == "$(git rev-parse HEAD)" ]] || fail "Remote tag does not match checked-out source"
+          echo "source=$source" >> "$GITHUB_OUTPUT"
+      - name: Build deterministic binaries
+        shell: bash
+        run: |
+          set -euo pipefail
           go test ./...
           go run ./scripts/release
           git diff --exit-code -- Formula/ferri.rb
       - name: Upload immutable release assets
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bash scripts/release-assets.sh dist/ferri_* dist/SHA256SUMS THIRD-PARTY-NOTICES.md
+        run: GITHUB_REF_NAME="$RELEASE_TAG" bash scripts/release-assets.sh dist/ferri_* dist/SHA256SUMS THIRD-PARTY-NOTICES.md
   bottles:
     needs: release
     if: inputs.bottles
@@ -49,17 +69,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release.outputs.source }}
       - name: Build and test bottles from released binaries
         env:
           HOMEBREW_NO_AUTO_UPDATE: '1'
-        run: bash scripts/release-bottles.sh build
+        run: GITHUB_REF_NAME="$RELEASE_TAG" bash scripts/release-bottles.sh build
       - uses: actions/upload-artifact@v4
         with:
           name: bottles-${{ matrix.os }}
           path: bottle-output/*
           if-no-files-found: error
   publish-bottles:
-    needs: bottles
+    needs: [release, bottles]
     if: inputs.bottles
     runs-on: ubuntu-latest
     permissions:
@@ -68,6 +90,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ needs.release.outputs.source }}
       - uses: actions/download-artifact@v4
         with:
           pattern: bottles-*
@@ -76,17 +99,24 @@ jobs:
       - name: Validate and upload immutable bottles
         env:
           GH_TOKEN: ${{ github.token }}
-        run: bash scripts/release-bottles.sh publish
+        run: GITHUB_REF_NAME="$RELEASE_TAG" bash scripts/release-bottles.sh publish
       - name: Commit only the verified bottle Formula
         shell: bash
+        env:
+          RELEASE_SOURCE: ${{ needs.release.outputs.source }}
         run: |
           set -euo pipefail
           cp Formula/ferri.rb "$RUNNER_TEMP/ferri-bottle.rb"
           git restore Formula/ferri.rb
           git fetch origin master
-          source=$(git rev-parse "refs/tags/$GITHUB_REF_NAME^{commit}")
+          source=$RELEASE_SOURCE
           changes=$(git diff --name-only "$source" origin/master)
-          [[ -z "$changes" || "$changes" == Formula/ferri.rb ]]
+          while IFS= read -r path; do
+            case "$path" in
+              ""|Formula/ferri.rb|.github/workflows/release.yml|RELEASING.md|tests/release_tag_test.sh) ;;
+              *) echo "Source changed since release: $path" >&2; exit 1 ;;
+            esac
+          done <<< "$changes"
           git show "$source:Formula/ferri.rb" | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/source-formula"
           git show origin/master:Formula/ferri.rb | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/master-formula"
           cmp "$RUNNER_TEMP/source-formula" "$RUNNER_TEMP/master-formula"
@@ -96,5 +126,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Formula/ferri.rb
-          git commit -m "Publish Ferri $GITHUB_REF_NAME macOS bottles"
+          git commit -m "Publish Ferri $RELEASE_TAG macOS bottles"
           git push origin HEAD:refs/heads/master

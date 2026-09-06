@@ -32,9 +32,20 @@ bash ~/TARS/Homebrew/publish.sh --target homebrew-ferri --apply --bottle
 
 ## 失败恢复
 
-发布器不移动已存在的 tag，不覆盖同名 Release 文件。上传重试时，同名文件内容必须完全一致；有差异立即停止。Workflow 失败后，检查输出中的 run ID，并在 GitHub Actions 重跑失败任务；不要删除 tag 重发，也不要使用 `--clobber`。若 tag 已推送但 workflow 调度失败，可手动针对该 tag 调度 Release workflow，并选择是否生成 bottles。
+发布器不移动已存在的 tag，不覆盖同名 Release 文件。上传重试时，同名文件内容必须完全一致；有差异立即停止。网络或 runner 等临时故障，可在 GitHub Actions 重跑失败任务；不要删除 tag 重发，也不要使用 `--clobber`。如果错误来自工作流本身，重跑旧任务仍使用旧工作流，必须先把修复提交并推送到 master，再从 master 的新版工作流恢复原标签：
 
-Bottle 汇总要求两个架构均成功，校验平台、版本、文件名、可重定位属性与实际 SHA256。更新 master 前还会确认源码未发生其他变化，避免把旧版本 Bottle 写入新版本 Formula。设备工具的下载仍由用户在首次安装应用时确认；发布流程不向连接的手机安装应用。
+```sh
+gh workflow run release.yml --repo leo1394/homebrew-ferri --ref master -f release_tag=v0.1.0 -f bottles=true
+gh run list --repo leo1394/homebrew-ferri --workflow release.yml --limit 5
+# 使用上一步新任务的 ID
+gh run watch RUN_ID --repo leo1394/homebrew-ferri --exit-status
+```
+
+`release_tag` 只选择已有标签，不创建或移动标签。工作流重新读取远端附注标签，校验版本和检出的提交；后续 Bottle 任务固定使用验证后的提交。这样即使 checkout 在本地把标签映射到剥离后的提交，也不会误判远端标签类型。若仅调度失败且工作流无需修改，仍可使用 `--ref v0.1.0 -f bottles=true`。已有标签不能重复执行发布器 `--apply`。
+
+Bottle 汇总要求两个架构均成功，校验平台、版本、文件名、可重定位属性与实际 SHA256。更新 master 前仅允许 Formula、Release 工作流、本文档及标签回归测试发生变化，并再次比对去掉 Bottle 段的 Formula，确认发布源码未发生其他变化，避免把旧版本 Bottle 写入新版本 Formula。设备工具的下载仍由用户在首次安装应用时确认；发布流程不向连接的手机安装应用。
+
+标签回归验证：`bash tests/release_tag_test.sh`。
 
 本地验证：`go test ./...`、`go vet ./...`、`bash tests/completion_test.sh`、`ruby tests/bottle_metadata_test.rb`；Windows 构建后运行 `./tests/windows_test.ps1`。通用发布器测试为工作区的 `tests/publish_test.sh` 和 `tests/publish_go_binary_test.sh`。
 

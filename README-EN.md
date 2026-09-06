@@ -31,8 +31,6 @@ Get a build, connect a test device, verify the update. App testers and developer
 
 ## Install
 
-> The project is preparing its first release. Remote installation below will become available after that release is published. For now, [build from source](#development-and-contributing).
-
 ### Homebrew (recommended)
 
 ```sh
