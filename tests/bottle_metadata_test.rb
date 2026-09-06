@@ -32,6 +32,8 @@ Dir.mktmpdir("ferri-bottle-test") do |directory|
   abort output unless status.success?
   result = File.read(formula_path)
   abort "missing bottle architecture" unless result.include?("arm64_sequoia:") && result.include?(" sequoia:")
+  digest_columns = result.lines.grep(/sha256 cellar:/).map { |line| line.index('"') }
+  abort "misaligned bottle digests" unless digest_columns.uniq.length == 1
   abort "wrong uploaded filename" unless File.file?(File.join(bottles, "upload/ferri-0.1.0.sequoia.bottle.tar.gz"))
   output, status = Open3.capture2e(*args)
   abort "not idempotent: #{output}" unless status.success? && result == File.read(formula_path)

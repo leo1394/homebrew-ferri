@@ -6,7 +6,7 @@ $oldPath = $env:Path
 try {
     & (Join-Path $root 'install.ps1') -Local -InstallDir $destination
     $version = @(& (Join-Path $destination 'ferri.exe') --version)
-    if ($LASTEXITCODE -ne 0 -or $version.Count -ne 2 -or $version[0] -ne 'ferri version 0.1.0 (2026-09-06)' -or $version[1] -ne 'https://github.com/leo1394/homebrew-ferri') { throw 'Windows launcher failed' }
+    if ($LASTEXITCODE -ne 0 -or $version.Count -ne 2 -or $version[0] -ne 'ferri version 0.1.1 (2026-09-06)' -or $version[1] -ne 'https://github.com/leo1394/homebrew-ferri') { throw 'Windows launcher failed' }
     . (Join-Path $destination 'ferri-completion.ps1')
     $result = [System.Management.Automation.CommandCompletion]::CompleteInput('ferri --tar', 11, $null)
     if ('--target' -notin $result.CompletionMatches.CompletionText) { throw 'Option completion failed' }

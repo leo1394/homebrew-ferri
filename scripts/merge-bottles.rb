@@ -31,7 +31,7 @@ files.each do |file|
     sha = details.fetch("sha256")
     abort "bottle checksum mismatch" unless sha.match?(/\A[0-9a-f]{64}\z/) && Digest::SHA256.file(archive).hexdigest == sha
     FileUtils.cp(archive, File.join(upload, remote_name))
-    tags[tag] = "    sha256 cellar: :#{cellar}, #{tag}: \"#{sha}\""
+    tags[tag] = "    sha256 cellar: :#{cellar}, #{(tag + ":").ljust(14)} \"#{sha}\""
   end
 end
 abort "missing macOS architecture" unless tags.keys.sort == %w[arm64_sequoia sequoia]

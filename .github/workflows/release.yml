@@ -114,6 +114,8 @@ jobs:
           while IFS= read -r path; do
             case "$path" in
               ""|Formula/ferri.rb|.github/workflows/release.yml|RELEASING.md|tests/release_tag_test.sh) ;;
+              .gitignore|.idea/*|README.md|README-EN.md) ;;
+              scripts/merge-bottles.rb|tests/bottle_metadata_test.rb) ;;
               *) echo "Source changed since release: $path" >&2; exit 1 ;;
             esac
           done <<< "$changes"

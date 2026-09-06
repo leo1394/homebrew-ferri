@@ -15,7 +15,7 @@ import (
     "time"
 )
 
-const version = "0.1.0"
+const version = "0.1.1"
 const versionDate = "2026-09-06"
 const repositoryURL = "https://github.com/leo1394/homebrew-ferri"
 

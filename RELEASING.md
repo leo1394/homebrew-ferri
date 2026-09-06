@@ -43,7 +43,7 @@ gh run watch RUN_ID --repo leo1394/homebrew-ferri --exit-status
 
 `release_tag` 只选择已有标签，不创建或移动标签。工作流重新读取远端附注标签，校验版本和检出的提交；后续 Bottle 任务固定使用验证后的提交。这样即使 checkout 在本地把标签映射到剥离后的提交，也不会误判远端标签类型。若仅调度失败且工作流无需修改，仍可使用 `--ref v0.1.0 -f bottles=true`。已有标签不能重复执行发布器 `--apply`。
 
-Bottle 汇总要求两个架构均成功，校验平台、版本、文件名、可重定位属性与实际 SHA256。更新 master 前仅允许 Formula、Release 工作流、本文档及标签回归测试发生变化，并再次比对去掉 Bottle 段的 Formula，确认发布源码未发生其他变化，避免把旧版本 Bottle 写入新版本 Formula。设备工具的下载仍由用户在首次安装应用时确认；发布流程不向连接的手机安装应用。
+Bottle 汇总要求两个架构均成功，校验平台、版本、文件名、可重定位属性与实际 SHA256。更新 master 前仅允许 Formula、Release 工作流、README、本文档、标签回归测试、Bottle 元数据合并脚本及其测试、Git 忽略规则及 IDE 配置发生变化，并再次比对去掉 Bottle 段的 Formula，确认发布源码未发生其他变化，避免把旧版本 Bottle 写入新版本 Formula。设备工具的下载仍由用户在首次安装应用时确认；发布流程不向连接的手机安装应用。
 
 标签回归验证：`bash tests/release_tag_test.sh`。
 

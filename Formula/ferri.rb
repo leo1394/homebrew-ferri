@@ -1,7 +1,7 @@
 class Ferri < Formula
   desc "Install Android and iOS apps from files or URLs"
   homepage "https://github.com/leo1394/homebrew-ferri"
-  version "0.1.0"
+  version "0.1.1"
   license "MIT"
 
   head do
@@ -11,23 +11,23 @@ class Ferri < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.0/ferri_0.1.0_darwin_arm64", using: :nounzip
-      sha256 "0c3fce86d46209de2297956bbd26d783190dbeeb3e7a3ff44fa64bfe0b0b0f53"
+      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.1/ferri_0.1.1_darwin_arm64", using: :nounzip
+      sha256 "e461df14d8da6448f40bfc2bd904b4dd9b56e0d1fed088d0c1f6669d5d4e6669"
     end
     on_intel do
-      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.0/ferri_0.1.0_darwin_amd64", using: :nounzip
-      sha256 "47697153a27f2bfd8a8c16486c47cc82b5e837a68323538e8489ab2bde2572ba"
+      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.1/ferri_0.1.1_darwin_amd64", using: :nounzip
+      sha256 "e37bc178cbe01b6451dae5f3b3683789d1fd965b7d1e76c7264a2d03ba3c570a"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.0/ferri_0.1.0_linux_arm64", using: :nounzip
-      sha256 "14789fd4681c3cdd1206c573830ebf845e57571707dae03fc22342f4829b7d99"
+      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.1/ferri_0.1.1_linux_arm64", using: :nounzip
+      sha256 "13074fb05e524d7e2f14c7224c1f7f592007c96c55949cec29203ff7f11b5b34"
     end
     on_intel do
-      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.0/ferri_0.1.0_linux_amd64", using: :nounzip
-      sha256 "ef3eff4e0503acc166a9544a6c4f101e4ef182e91affec5d37ba55a448b702a8"
+      url "https://github.com/leo1394/homebrew-ferri/releases/download/v0.1.1/ferri_0.1.1_linux_amd64", using: :nounzip
+      sha256 "8bcffdf1ff28d17adbfdbe57f81a4da9f3d7f3c43777c1afe226c8dea52848dc"
     end
   end
 
@@ -45,7 +45,7 @@ class Ferri < Formula
 
   test do
     output = shell_output("#{bin}/ferri --version")
-    assert_match "ferri version 0.1.0 (", output
+    assert_match "ferri version 0.1.1 (", output
     assert_match(%r{\(\d{4}-\d{2}-\d{2}\)\nhttps://github.com/leo1394/homebrew-ferri\n\z}, output)
     assert_match "--target", shell_output("#{bin}/ferri --help")
     assert_match "Did you mean '--target'", shell_output("#{bin}/ferri --targte app.apk 2>&1", 2)
