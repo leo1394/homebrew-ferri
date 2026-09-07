@@ -41,6 +41,8 @@ export PATH="$TEMP/tools:$PATH"
 bash "$ROOT/install.sh"
 [[ "$("$FERRI_INSTALL_DIR/ferri" --version)" == "$expected_output" ]]
 [[ -f "$FERRI_DATA_DIR/zsh/site-functions/_ferri" ]]
+"$ROOT/bin/ferri" __man > "$TEMP/expected.1"
+cmp "$TEMP/expected.1" "$FERRI_DATA_DIR/man/man1/ferri.1"
 printf '%064d  %s\n' 0 "$asset" > "$FERRI_TEST_FIXTURES/SHA256SUMS"
 if bash "$ROOT/install.sh" "$version" > "$TEMP/output" 2>&1; then
     printf 'Installer accepted wrong checksum\n' >&2

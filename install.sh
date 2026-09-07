@@ -63,6 +63,13 @@ mkdir -p "$INSTALL_DIR" "$DATA_DIR/bash-completion/completions" "$DATA_DIR/zsh/s
 for shell in bash zsh fish; do
     "$TEMP_DIR/ferri" __completion "$shell" > "$TEMP_DIR/$shell"
 done
+# Older releases do not include the embedded manual yet.
+if "$TEMP_DIR/ferri" __man > "$TEMP_DIR/ferri.1" 2>/dev/null; then
+    mkdir -p "$DATA_DIR/man/man1"
+    cp "$TEMP_DIR/ferri.1" "$DATA_DIR/man/man1/ferri.1"
+    printf 'Manual: %s/man/man1/ferri.1\n' "$DATA_DIR"
+    printf 'If man ferri cannot find it, run: export MANPATH="%s/man:${MANPATH:-}"\n' "$DATA_DIR"
+fi
 STAGED_FILE="$(mktemp "$INSTALL_DIR/.ferri.XXXXXX")"
 cp "$TEMP_DIR/ferri" "$STAGED_FILE"
 chmod 0755 "$STAGED_FILE"

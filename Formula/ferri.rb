@@ -45,6 +45,10 @@ class Ferri < Formula
     end
     chmod 0755, bin/"ferri"
     generate_completions_from_executable(bin/"ferri", "__completion")
+    if build.head?
+      man1.mkpath
+      (man1/"ferri.1").write Utils.safe_popen_read(bin/"ferri", "__man")
+    end
     pwsh_completion.mkpath
     (pwsh_completion/"ferri.ps1").write Utils.safe_popen_read(bin/"ferri", "__completion", "powershell")
   end

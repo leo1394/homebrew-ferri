@@ -127,6 +127,7 @@ Use either `--url` or `--target`. Quote URLs containing characters such as `&`. 
 | List connected devices | `ferri --list` |
 | Install on a specific device | `ferri --target ./app.apk --device SERIAL` |
 | Show help | `ferri --help` |
+| Read the manual | `man ferri` |
 | Show the version | `ferri version` |
 
 Short options `-T`, `-d`, `-l`, `-h`, and `-v` are also supported. Non-interactive sessions with multiple devices must specify `--device`. Missing tools produce an error instead of a silent download.
@@ -160,6 +161,8 @@ Approved downloads go into `~/.ferri`, without administrator access or changes t
 - **Platform differences:** Linux ARM64 requires an adb package from your distribution. Running the x64 binary on Windows ARM64 requires OS emulation support.
 
 See the [user guide](docs/usage-en.md) for environment settings, exit codes, and troubleshooting.
+
+The manual ships with the next Homebrew/Bottle and Unix release (published 0.1.1 does not include it). After building locally, run `bash install.sh --local`. If needed, set `export MANPATH="$HOME/.local/share/man:${MANPATH:-}"`; with a custom `FERRI_DATA_DIR`, use `$FERRI_DATA_DIR/man` instead.
 
 ## Development and contributing
 

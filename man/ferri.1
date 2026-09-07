@@ -1,0 +1,94 @@
+.TH FERRI 1 "@DATE@" "Ferri @VERSION@" "User Commands"
+.SH NAME
+ferri \- install Android and iOS apps on connected devices
+.SH SYNOPSIS
+.B ferri \-\-target
+.I PATH
+.RB [ \-\-device " ID"]
+.br
+.B ferri \-\-url
+.I URL
+.RB [ \-\-android " | " \-\-ios ]
+.RB [ \-\-device " ID"]
+.br
+.B ferri \-\-list
+.br
+.B ferri \-\-help
+.br
+.B ferri version
+.SH DESCRIPTION
+Ferri is a cross-platform app installation tool for app testers and
+developers.
+It installs local APK, APKS, AAB and IPA packages, or downloads packages from
+URLs.
+.PP
+With multiple compatible devices, Ferri asks you to select a device and
+confirm.
+Non-interactive sessions must select a device with
+.B \-\-device
+when more than one compatible device is connected.
+.SH OPTIONS
+.TP
+.BR \-T ", " \-\-target " PATH"
+Install a local APK, APKS, AAB or IPA package. Quote paths containing spaces.
+.TP
+.B \-\-url URL
+Download a direct package URL or resolve a supported installation page.
+Public Pgyer pages and combined Android/iOS pages are supported.
+Combined pages may require a platform selection.
+Google Play links open the store on the Android device; they do not download
+an APK.
+App Store links cannot be used to obtain an IPA directly.
+Not all third-party pages can be resolved; use a direct package URL if
+necessary.
+.TP
+.B \-\-android
+Select Android for a URL installation.
+.TP
+.B \-\-ios
+Select iOS for a URL installation.
+.TP
+.BR \-d ", " \-\-device " ID"
+Install on the device with this exact ID. Use with target or URL installation.
+.TP
+.BR \-l ", " \-\-list
+List connected Android and iOS devices.
+.TP
+.BR \-h ", " \-\-help
+Show command help.
+.TP
+.BR \-v ", " \-\-version ", " version
+Show the version, release date and repository URL.
+.SH INSTALLATION AND APP DATA
+Ferri first attempts an update to preserve existing app data.
+If installation fails and the same application ID or bundle ID is already
+installed, Ferri can offer to uninstall it and retry.
+Uninstalling deletes local app data and requires explicit confirmation.
+Non-interactive sessions never confirm this destructive fallback
+automatically.
+.PP
+Enable USB debugging on Android. Unlock and trust the computer on iOS.
+For Android connection failures, Ferri may restart the adb server once and
+retry
+discovery. Device listing and completion do not restart the server.
+.SH DEPENDENCIES
+Missing device tools are downloaded only after confirmation and stored under
+.IR ~/.ferri .
+Java and bundletool are needed only for AAB/APKS packages.
+Help, version output and completion do not download tools.
+.SH EXAMPLES
+.nf
+ferri \-\-list
+ferri \-\-target "build/My App.apk"
+ferri \-\-target app.ipa \-\-device DEVICE_ID
+ferri \-\-url https://example.com/app.apk \-\-android
+ferri \-\-url https://www.pgyer.com/clobotics-rea-test \-\-android
+.fi
+.SH FILES
+.TP
+.I ~/.ferri
+Managed device tools and supporting downloads.
+.SH SEE ALSO
+.BR adb (1)
+.PP
+https://github.com/leo1394/homebrew-ferri

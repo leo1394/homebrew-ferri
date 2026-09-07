@@ -165,6 +165,10 @@ func commandRunner(out, errOut io.Writer) runner {
 }
 
 func (a *app) execute(args []string) error {
+    if len(args) == 1 && args[0] == "__man" {
+        _, err := io.WriteString(a.out, manual())
+        return err
+    }
     if len(args) == 2 && args[0] == "__completion" {
         script, err := completion(args[1])
         if err != nil { return err }

@@ -126,6 +126,7 @@ ferri --url "https://www.pgyer.com/clobotics-rea-test" --android --device SERIAL
 | 列出连接的设备 | `ferri --list` |
 | 安装到指定设备 | `ferri --target ./app.apk --device SERIAL` |
 | 查看帮助 | `ferri --help` |
+| 查看手册 | `man ferri` |
 | 查看版本 | `ferri version` |
 
 支持短参数 `-T`、`-d`、`-l`、`-h`、`-v`。非交互环境连接多台设备时必须指定 `--device`；缺少工具时会报错，不会静默下载。
@@ -157,6 +158,8 @@ Download and install these tools? [y/N]:
 - **平台差异**：Linux ARM64 需通过发行版提供 adb；Windows ARM64 运行 x64 程序需要系统仿真支持。
 
 更多环境配置、退出码和故障处理见[使用指南](docs/usage.md)。
+
+手册页随下一版本的 Homebrew/Bottle 和 Unix 安装提供（已发布的 0.1.1 不含手册）。本地构建后可运行 `bash install.sh --local`；若系统找不到手册，设置 `export MANPATH="$HOME/.local/share/man:${MANPATH:-}"`。自定义 `FERRI_DATA_DIR` 时将该路径替换为 `$FERRI_DATA_DIR/man`。
 
 ## 开发与贡献
 

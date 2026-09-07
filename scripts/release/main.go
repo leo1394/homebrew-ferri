@@ -77,6 +77,8 @@ func build() error {
     end
     chmod 0755, bin/"ferri"
     generate_completions_from_executable(bin/"ferri", "__completion")
+    man1.mkpath
+    (man1/"ferri.1").write Utils.safe_popen_read(bin/"ferri", "__man")
     pwsh_completion.mkpath
     (pwsh_completion/"ferri.ps1").write Utils.safe_popen_read(bin/"ferri", "__completion", "powershell")
   end
@@ -89,6 +91,7 @@ func build() error {
 `, version)
     fmt.Fprint(&formula, `    assert_match "--target", shell_output("#{bin}/ferri --help")
     assert_match "Did you mean '--target'", shell_output("#{bin}/ferri --targte app.apk 2>&1", 2)
+    assert_match "FERRI", (man1/"ferri.1").read
     assert_path_exists bash_completion/"ferri"
     assert_path_exists zsh_completion/"_ferri"
     assert_path_exists fish_completion/"ferri.fish"
