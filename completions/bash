@@ -1,4 +1,4 @@
-_ferri() {
+_ferrie() {
     local cur="${COMP_WORDS[COMP_CWORD]}" prev="${COMP_WORDS[COMP_CWORD-1]}" item
     COMPREPLY=()
     case "$prev" in
@@ -8,9 +8,9 @@ _ferri() {
             return ;;
         --url) return ;;
         --device|-d)
-            while IFS= read -r item; do if [[ "$item" == "$cur"* ]]; then COMPREPLY+=("$item"); fi; done < <(ferri __devices 2>/dev/null)
+            while IFS= read -r item; do if [[ "$item" == "$cur"* ]]; then COMPREPLY+=("$item"); fi; done < <(ferrie __devices 2>/dev/null)
             return ;;
     esac
     COMPREPLY=( $(compgen -W '--target --url --android --ios --list --device --help version --version' -- "$cur") )
 }
-complete -o filenames -F _ferri ferri
+complete -o filenames -F _ferrie ferrie

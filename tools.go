@@ -38,7 +38,7 @@ func (a *app) prepare(names ...string) error {
     }
     if len(missing) == 0 { return nil }
     fmt.Fprintf(a.err, "Missing tools: %s\nInstall into %s (no administrator access)?\n", strings.Join(missing, ", "), a.cache)
-    if !a.interactive { return errors.New("Missing tools in non-interactive session; run Ferri interactively to approve installation, or provide tools via FERRI_* paths") }
+    if !a.interactive { return errors.New("Missing tools in non-interactive session; run Ferrie interactively to approve installation, or provide tools via FERRIE_* paths") }
     fmt.Fprint(a.out, "Download and install these tools? [y/N]: ")
     answer, err := a.readLine()
     if err != nil || (!strings.EqualFold(answer, "y") && !strings.EqualFold(answer, "yes")) { return errors.New("Dependency installation cancelled") }
@@ -71,11 +71,11 @@ func (a *app) javaUsable(path string) bool {
 }
 
 func (a *app) tool(name string, install bool) (string, error) {
-    override := os.Getenv("FERRI_" + strings.ToUpper(name))
+    override := os.Getenv("FERRIE_" + strings.ToUpper(name))
     if override != "" {
         path, err := filepath.Abs(override)
-        if err != nil || !regular(path) { return "", fmt.Errorf("FERRI_%s must point to a file", strings.ToUpper(name)) }
-        if name == "java" && !a.javaUsable(path) { return "", errors.New("FERRI_JAVA must point to Java 17+") }
+        if err != nil || !regular(path) { return "", fmt.Errorf("FERRIE_%s must point to a file", strings.ToUpper(name)) }
+        if name == "java" && !a.javaUsable(path) { return "", errors.New("FERRIE_JAVA must point to Java 17+") }
         return path, nil
     }
     home, _ := os.UserHomeDir()
@@ -182,7 +182,7 @@ func (a *app) installIOS(folder string) (string, error) {
         "linux": "a55fdb4c507391c0548252e01d1deb6ae3c7fd99cfbce842c6f80569cc125604",
         "win": "939c6bcaafed183a92afb9f79cc11b1f935fa6389bfc94d3902e3f52c4dff3fe",
     }
-    if system == "" || (runtime.GOARCH != "amd64" && runtime.GOARCH != "arm64") { return "", errors.New("Provide a compatible go-ios executable via FERRI_IOS") }
+    if system == "" || (runtime.GOARCH != "amd64" && runtime.GOARCH != "arm64") { return "", errors.New("Provide a compatible go-ios executable via FERRIE_IOS") }
     archive := filepath.Join(folder, "ios.zip")
     if err := a.download("https://github.com/danielpaulus/go-ios/releases/download/v1.3.2/go-ios-" + system + ".zip", archive, checksums[system]); err != nil { return "", err }
     unpack := filepath.Join(folder, "go-ios")
@@ -200,7 +200,7 @@ func (a *app) installIOS(folder string) (string, error) {
 func (a *app) installJava(folder string) (string, error) {
     system := map[string]string{"darwin": "mac", "linux": "linux", "windows": "windows"}[runtime.GOOS]
     arch := map[string]string{"amd64": "x64", "arm64": "aarch64"}[runtime.GOARCH]
-    if system == "" || arch == "" { return "", errors.New("Provide Java 17+ via JAVA_HOME or FERRI_JAVA") }
+    if system == "" || arch == "" { return "", errors.New("Provide Java 17+ via JAVA_HOME or FERRIE_JAVA") }
     metadata := filepath.Join(folder, "java.json")
     if err := a.download("https://api.adoptium.net/v3/assets/latest/17/hotspot?architecture=" + arch + "&image_type=jre&os=" + system, metadata, ""); err != nil { return "", err }
     data, err := os.ReadFile(metadata)

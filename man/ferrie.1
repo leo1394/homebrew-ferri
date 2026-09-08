@@ -1,28 +1,28 @@
-.TH FERRI 1 "@DATE@" "Ferri @VERSION@" "User Commands"
+.TH FERRIE 1 "@DATE@" "Ferrie @VERSION@" "User Commands"
 .SH NAME
-ferri \- install Android and iOS apps on connected devices
+ferrie \- install Android and iOS apps on connected devices
 .SH SYNOPSIS
-.B ferri \-\-target
+.B ferrie \-\-target
 .I PATH
 .RB [ \-\-device " ID"]
 .br
-.B ferri \-\-url
+.B ferrie \-\-url
 .I URL
 .RB [ \-\-android " | " \-\-ios ]
 .RB [ \-\-device " ID"]
 .br
-.B ferri \-\-list
+.B ferrie \-\-list
 .br
-.B ferri \-\-help
+.B ferrie \-\-help
 .br
-.B ferri version
+.B ferrie version
 .SH DESCRIPTION
-Ferri is a cross-platform app installation tool for app testers and
+Ferrie is a cross-platform app installation tool for app testers and
 developers.
 It installs local APK, APKS, AAB and IPA packages, or downloads packages from
 URLs.
 .PP
-With multiple compatible devices, Ferri asks you to select a device and
+With multiple compatible devices, Ferrie asks you to select a device and
 confirm.
 Non-interactive sessions must select a device with
 .B \-\-device
@@ -60,35 +60,35 @@ Show command help.
 .BR \-v ", " \-\-version ", " version
 Show the version, release date and repository URL.
 .SH INSTALLATION AND APP DATA
-Ferri first attempts an update to preserve existing app data.
+Ferrie first attempts an update to preserve existing app data.
 If installation fails and the same application ID or bundle ID is already
-installed, Ferri can offer to uninstall it and retry.
+installed, Ferrie can offer to uninstall it and retry.
 Uninstalling deletes local app data and requires explicit confirmation.
 Non-interactive sessions never confirm this destructive fallback
 automatically.
 .PP
 Enable USB debugging on Android. Unlock and trust the computer on iOS.
-For Android connection failures, Ferri may restart the adb server once and
+For Android connection failures, Ferrie may restart the adb server once and
 retry
 discovery. Device listing and completion do not restart the server.
 .SH DEPENDENCIES
 Missing device tools are downloaded only after confirmation and stored under
-.IR ~/.ferri .
+.IR ~/.ferrie .
 Java and bundletool are needed only for AAB/APKS packages.
 Help, version output and completion do not download tools.
 .SH EXAMPLES
 .nf
-ferri \-\-list
-ferri \-\-target "build/My App.apk"
-ferri \-\-target app.ipa \-\-device DEVICE_ID
-ferri \-\-url https://example.com/app.apk \-\-android
-ferri \-\-url https://www.pgyer.com/clobotics-rea-test \-\-android
+ferrie \-\-list
+ferrie \-\-target "build/My App.apk"
+ferrie \-\-target app.ipa \-\-device DEVICE_ID
+ferrie \-\-url https://example.com/app.apk \-\-android
+ferrie \-\-url https://www.pgyer.com/clobotics-rea-test \-\-android
 .fi
 .SH FILES
 .TP
-.I ~/.ferri
+.I ~/.ferrie
 Managed device tools and supporting downloads.
 .SH SEE ALSO
 .BR adb (1)
 .PP
-https://github.com/leo1394/homebrew-ferri
+https://github.com/leo1394/homebrew-ferrie

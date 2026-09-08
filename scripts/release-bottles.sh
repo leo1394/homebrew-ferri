@@ -14,15 +14,15 @@ mkdir -p "$output_dir"
 case "${1:-}" in
     build)
         brew tap-new --no-git "$tap"
-        cp "$repo_root/Formula/ferri.rb" "$(brew --repository "$tap")/Formula/ferri.rb"
-        if brew commands | grep -qx trust; then brew trust --formula "$tap/ferri"; fi
-        brew install --build-bottle "$tap/ferri"
-        brew test "$tap/ferri"
+        cp "$repo_root/Formula/ferrie.rb" "$(brew --repository "$tap")/Formula/ferrie.rb"
+        if brew commands | grep -qx trust; then brew trust --formula "$tap/ferrie"; fi
+        brew install --build-bottle "$tap/ferrie"
+        brew test "$tap/ferrie"
         cd "$output_dir"
-        brew bottle --json --root-url "https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME" "$tap/ferri"
+        brew bottle --json --root-url "https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME" "$tap/ferrie"
         # Prove this artifact can be poured, including its completion files.
-        brew uninstall "$tap/ferri"
-        ruby -rjson -rfileutils - "$(brew --repository "$tap")/Formula/ferri.rb" <<'RUBY'
+        brew uninstall "$tap/ferrie"
+        ruby -rjson -rfileutils - "$(brew --repository "$tap")/Formula/ferrie.rb" <<'RUBY'
 metadata = JSON.parse(File.read(Dir["*.bottle.json"].fetch(0))).values.fetch(0).fetch("bottle")
 block = "\n  bottle do\n    root_url #{("file://" + Dir.pwd).dump}\n"
 metadata.fetch("tags").each do |tag, entry|
@@ -36,10 +36,10 @@ path = ARGV.fetch(0)
 text = File.read(path).sub(/\n  bottle do\n.*?^  end\n/m, "")
 File.write(path, text.sub("  license \"MIT\"\n", "  license \"MIT\"\n#{block}"))
 RUBY
-        brew install --force-bottle "$tap/ferri"
+        brew install --force-bottle "$tap/ferrie"
         # Keep only the original brew bottle artifacts for the publishing job.
-        rm -f ferri-[0-9]*.bottle.tar.gz
-        brew test "$tap/ferri"
+        rm -f ferrie-[0-9]*.bottle.tar.gz
+        brew test "$tap/ferrie"
         ;;
     publish)
         ruby "$repo_root/scripts/merge-bottles.rb" "$repo_root" "$output_dir" "$GITHUB_REPOSITORY" "$version"

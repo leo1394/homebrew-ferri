@@ -18,20 +18,20 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          go build -o bin/ferri .
+          go build -o bin/ferrie .
           bash -n install.sh
           bash -n scripts/release-assets.sh
           bash -n scripts/release-bottles.sh
           ruby tests/bottle_metadata_test.rb
           bash tests/completion_test.sh
           bash tests/installer_test.sh
-          FERRI_INSTALL_DIR="$RUNNER_TEMP/ferri bin" FERRI_DATA_DIR="$RUNNER_TEMP/ferri share" bash install.sh --local
-          "$RUNNER_TEMP/ferri bin/ferri" --version
+          FERRIE_INSTALL_DIR="$RUNNER_TEMP/ferrie bin" FERRIE_DATA_DIR="$RUNNER_TEMP/ferrie share" bash install.sh --local
+          "$RUNNER_TEMP/ferrie bin/ferrie" --version
       - name: Windows installer and completion
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          go build -o bin/ferri.exe .
+          go build -o bin/ferrie.exe .
           ./tests/windows_test.ps1
   homebrew:
     runs-on: macos-latest
@@ -44,8 +44,8 @@ jobs:
       - name: Install prebuilt formula with no runtime dependencies
         run: |
           go run ./scripts/release
-          brew tap-new --no-git ferri/local
-          ruby -e 'text = File.read("Formula/ferri.rb"); text.gsub!(%r{https://github.com/leo1394/homebrew-ferri/releases/download/v[^/]+/}, "file://#{Dir.pwd}/dist/"); File.write(ARGV[0], text)' "$(brew --repository ferri/local)/Formula/ferri.rb"
-          if brew commands | grep -qx trust; then brew trust --formula ferri/local/ferri; fi
-          brew install ferri/local/ferri
-          brew test ferri/local/ferri
+          brew tap-new --no-git ferrie/local
+          ruby -e 'text = File.read("Formula/ferrie.rb"); text.gsub!(%r{https://github.com/leo1394/homebrew-ferrie/releases/download/v[^/]+/}, "file://#{Dir.pwd}/dist/"); File.write(ARGV[0], text)' "$(brew --repository ferrie/local)/Formula/ferrie.rb"
+          if brew commands | grep -qx trust; then brew trust --formula ferrie/local/ferrie; fi
+          brew install ferrie/local/ferrie
+          brew test ferrie/local/ferrie

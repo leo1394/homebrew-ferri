@@ -16,7 +16,7 @@ import (
     "howett.net/plist"
 )
 
-// Both parsers are compiled into Ferri; no extra device tools or runtimes are needed.
+// Both parsers are compiled into Ferrie; no extra device tools or runtimes are needed.
 func packageID(target string) (string, error) {
     archive, err := zip.OpenReader(target)
     if err != nil { return "", fmt.Errorf("Read package identity: %w", err) }
@@ -67,7 +67,7 @@ func readMetadata(file *zip.File) ([]byte, error) {
 }
 
 func apksID(files []*zip.File) (string, error) {
-    folder, err := os.MkdirTemp("", "ferri-identity-*")
+    folder, err := os.MkdirTemp("", "ferrie-identity-*")
     if err != nil { return "", err }
     defer os.RemoveAll(folder)
     id := ""
@@ -114,7 +114,7 @@ func (a *app) confirmRemoval(target string, selected device, tool string) error 
     }
     if !installed { return errors.New("No installed app with the same ID; nothing was uninstalled") }
     if !a.interactive { return errors.New("Existing app found; refusing to uninstall in a non-interactive session. Retry in a terminal to review the data-loss warning") }
-    fmt.Fprintf(a.out, "Installation failed, and %s is already installed on %s.\nWARNING: Uninstalling permanently deletes this app's local data. If reinstallation fails, Ferri cannot restore the old app or its data.\nUninstall this app and retry installation? [y/N]: ", id, selected.id)
+    fmt.Fprintf(a.out, "Installation failed, and %s is already installed on %s.\nWARNING: Uninstalling permanently deletes this app's local data. If reinstallation fails, Ferrie cannot restore the old app or its data.\nUninstall this app and retry installation? [y/N]: ", id, selected.id)
     answer, err := a.readLine()
     if err != nil || (strings.ToLower(strings.TrimSpace(answer)) != "y" && strings.ToLower(strings.TrimSpace(answer)) != "yes") {
         return errors.New("Uninstall cancelled; existing app was not removed")

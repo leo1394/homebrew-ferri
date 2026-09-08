@@ -1,4 +1,4 @@
-# Ferri
+# Ferrie
 
 <p align="center"><strong>简体中文</strong> · <a href="README-EN.md">English</a></p>
 
@@ -7,23 +7,23 @@
   <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-0078D4" alt="macOS、Linux、Windows">
 </p>
 
-![Ferri](assets/ferri-banner-zh.png)
+![Ferrie](assets/ferrie-banner-zh.png)
 
-Ferri 是面向 App 测试与开发的跨平台安装工具。在 macOS、Linux 或 Windows 上，用同一条命令将本地或链接中的 Android / iOS 安装包安装到连接的设备上：
+Ferrie 是面向 App 测试与开发的跨平台安装工具。在 macOS、Linux 或 Windows 上，用同一条命令将本地或链接中的 Android / iOS 安装包安装到连接的设备上：
 
 ```sh
-ferri --target ./app.apk
+ferrie --target ./app.apk
 ```
 
 **[安装](#安装) · [快速上手](#快速上手) · [常用命令](#常用命令) · [使用指南](docs/usage.md)**
 
-## 为什么使用 Ferri
+## 为什么使用 Ferrie
 
-Ferri 的名字取自 **ferry（渡船）**：承载安装包，送达目标设备。
+Ferrie 的名字取自 **ferry（渡船）**：承载安装包，送达目标设备。
 
-拿到一个安装包、连接测试设备、验证新版本——这是测试人员和开发人员每天都会重复的工作。Ferri 将不同平台的安装命令收敛到同一个入口，让你专注于应用本身。
+拿到一个安装包、连接测试设备、验证新版本——这是测试人员和开发人员每天都会重复的工作。Ferrie 将不同平台的安装命令收敛到同一个入口，让你专注于应用本身。
 
-- **一个命令，多个平台**：在 macOS、Linux、Windows 上使用相同的 `ferri` 命令，支持 APK、APKS、AAB、IPA。
+- **一个命令，多个平台**：在 macOS、Linux、Windows 上使用相同的 `ferrie` 命令，支持 APK、APKS、AAB、IPA。
 - **更新已有应用**：优先覆盖安装，保留本地数据。失败且检测到同 ID 应用时，提示数据丢失风险，确认后才卸载重装；默认不卸载。
 - **轻装上手**：独立可执行文件，无需预装 Python、Node.js 或 Go；缺少设备工具时，按需安装。
 
@@ -32,14 +32,14 @@ Ferri 的名字取自 **ferry（渡船）**：承载安装包，送达目标设�
 ### Homebrew（推荐）
 
 ```sh
-brew install leo1394/ferri/ferri
+brew install leo1394/ferrie/ferrie
 ```
 
 稳定版优先安装匹配的 Homebrew Bottle；没有匹配 Bottle 时直接下载对应平台的可执行文件。两种方式都不需要本地编译，包含 Shell 补全，没有语言运行时依赖。升级时运行：
 
 ```sh
 brew update
-brew upgrade ferri
+brew upgrade ferrie
 ```
 
 ### Bash (Linux / macOS)
@@ -48,22 +48,22 @@ brew upgrade ferri
 版本：
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/leo1394/homebrew-ferri/master/install.sh -o /tmp/ferri-install.sh
-bash /tmp/ferri-install.sh
+curl -fsSL https://raw.githubusercontent.com/leo1394/homebrew-ferrie/master/install.sh -o /tmp/ferrie-install.sh
+bash /tmp/ferrie-install.sh
 ```
 
-安装器校验 SHA256，将 Ferri 安装到 `~/.local/bin`。如果该目录不在 PATH 中，按提示添加。再次运行安装器即可更新。
+安装器校验 SHA256，将 Ferrie 安装到 `~/.local/bin`。如果该目录不在 PATH 中，按提示添加。再次运行安装器即可更新。
 
 ### Windows
 
 在 PowerShell 中运行：
 
 ```powershell
-Invoke-WebRequest https://raw.githubusercontent.com/leo1394/homebrew-ferri/master/install.ps1 -OutFile "$env:TEMP\ferri-install.ps1"
-powershell -ExecutionPolicy Bypass -File "$env:TEMP\ferri-install.ps1"
+Invoke-WebRequest https://raw.githubusercontent.com/leo1394/homebrew-ferrie/master/install.ps1 -OutFile "$env:TEMP\ferrie-install.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\ferrie-install.ps1"
 ```
 
-安装器校验 SHA256，将 `ferri.exe` 安装到 `%LOCALAPPDATA%\Ferri`，并加入当前用户 PATH。重新打开终端后，PowerShell 和 CMD 都可使用。
+安装器校验 SHA256，将 `ferrie.exe` 安装到 `%LOCALAPPDATA%\Ferrie`，并加入当前用户 PATH。重新打开终端后，PowerShell 和 CMD 都可使用。
 
 预编译包覆盖 macOS / Linux 的 Intel（amd64）和 ARM64，以及 Windows x64。自定义安装目录、固定版本和其他 Unix 平台见[使用指南](docs/usage.md#安装选项)。
 
@@ -71,21 +71,21 @@ powershell -ExecutionPolicy Bypass -File "$env:TEMP\ferri-install.ps1"
 
 **1. 连接设备。** Android 开启 USB 调试并授权电脑；iOS 解锁设备并信任电脑。
 
-**2. 安装本地应用包。** 首次使用时，如果所需工具尚未就绪，Ferri 会列出缺失项，确认后才下载。
+**2. 安装本地应用包。** 首次使用时，如果所需工具尚未就绪，Ferrie 会列出缺失项，确认后才下载。
 
 ```sh
 # Android
-ferri --target ./app.apk
+ferrie --target ./app.apk
 
 # iOS
-ferri --target ./app.ipa
+ferrie --target ./app.ipa
 ```
 
-**3. 多台设备，明确选择。** Ferri 会让你选择设备并确认安装；已知设备 ID 时可直接指定：
+**3. 多台设备，明确选择。** Ferrie 会让你选择设备并确认安装；已知设备 ID 时可直接指定：
 
 ```sh
-ferri --list
-ferri --target ./app.apk --device SERIAL
+ferrie --list
+ferrie --target ./app.apk --device SERIAL
 ```
 
 只会选择与安装包平台匹配的设备。`--list` 使用已有设备工具，不触发下载；首次使用缺少工具时，会提示对应平台暂不可发现。
@@ -94,13 +94,13 @@ ferri --target ./app.apk --device SERIAL
 
 ```sh
 # 直接下载链接：自动识别 APK、APKS、AAB、IPA
-ferri --url "https://example.com/download/app.apk"
+ferrie --url "https://example.com/download/app.apk"
 
 # 蒲公英合并页：交互选择 Android / iOS
-ferri --url "https://www.pgyer.com/clobotics-rea-test"
+ferrie --url "https://www.pgyer.com/clobotics-rea-test"
 
 # 预先指定平台和设备
-ferri --url "https://www.pgyer.com/clobotics-rea-test" --android --device SERIAL
+ferrie --url "https://www.pgyer.com/clobotics-rea-test" --android --device SERIAL
 ```
 
 | 链接类型 | 行为 |
@@ -111,23 +111,23 @@ ferri --url "https://www.pgyer.com/clobotics-rea-test" --android --device SERIAL
 | Google Play 应用链接 | 在指定 Android 设备打开商店详情页，安装由用户在设备上完成 |
 | App Store 应用链接 | 识别并说明限制；请在设备的 App Store 安装，或提供已签名 IPA |
 
-`--url` 与 `--target` 二选一。包含 `&` 等字符的 URL 请加引号。下载使用 Ferri 内置能力，不增加运行时依赖，临时包在安装结束或失败后删除。需要登录、密码、验证码或复杂 JavaScript 的页面，请先在浏览器下载，再使用 `--target`。详情见[链接安装](docs/usage.md#链接安装)。
+`--url` 与 `--target` 二选一。包含 `&` 等字符的 URL 请加引号。下载使用 Ferrie 内置能力，不增加运行时依赖，临时包在安装结束或失败后删除。需要登录、密码、验证码或复杂 JavaScript 的页面，请先在浏览器下载，再使用 `--target`。详情见[链接安装](docs/usage.md#链接安装)。
 
 ## 常用命令
 
 | 任务 | 命令 |
 | --- | --- |
-| 安装 / 覆盖更新 APK | `ferri --target ./app.apk` |
-| 安装 IPA | `ferri --target ./app.ipa` |
-| 从 AAB 生成并安装 | `ferri --target ./app.aab` |
-| 安装 APKS | `ferri --target ./app.apks` |
-| 从链接安装 | `ferri --url "https://example.com/app.apk"` |
-| 选择合并页中的 Android 包 | `ferri --url "https://www.pgyer.com/clobotics-rea-test" --android` |
-| 列出连接的设备 | `ferri --list` |
-| 安装到指定设备 | `ferri --target ./app.apk --device SERIAL` |
-| 查看帮助 | `ferri --help` |
-| 查看手册 | `man ferri` |
-| 查看版本 | `ferri version` |
+| 安装 / 覆盖更新 APK | `ferrie --target ./app.apk` |
+| 安装 IPA | `ferrie --target ./app.ipa` |
+| 从 AAB 生成并安装 | `ferrie --target ./app.aab` |
+| 安装 APKS | `ferrie --target ./app.apks` |
+| 从链接安装 | `ferrie --url "https://example.com/app.apk"` |
+| 选择合并页中的 Android 包 | `ferrie --url "https://www.pgyer.com/clobotics-rea-test" --android` |
+| 列出连接的设备 | `ferrie --list` |
+| 安装到指定设备 | `ferrie --target ./app.apk --device SERIAL` |
+| 查看帮助 | `ferrie --help` |
+| 查看手册 | `man ferrie` |
+| 查看版本 | `ferrie version` |
 
 支持短参数 `-T`、`-d`、`-l`、`-h`、`-v`。非交互环境连接多台设备时必须指定 `--device`；缺少工具时会报错，不会静默下载。
 
@@ -137,7 +137,7 @@ ferri --url "https://www.pgyer.com/clobotics-rea-test" --android --device SERIAL
 
 ```text
 Missing tools: java, bundletool
-Install into /Users/me/.ferri (no administrator access)?
+Install into /Users/me/.ferrie (no administrator access)?
 Download and install these tools? [y/N]:
 ```
 
@@ -147,7 +147,7 @@ Download and install these tools? [y/N]:
 | IPA | go-ios |
 | AAB / APKS | adb、Java 17+、bundletool |
 
-确认后下载到 `~/.ferri`，无需管理员权限，也不修改系统 PATH。**Java 和 bundletool 只在 AAB / APKS 场景需要。** 查看列表、帮助、版本及自动补全都不会下载工具。
+确认后下载到 `~/.ferrie`，无需管理员权限，也不修改系统 PATH。**Java 和 bundletool 只在 AAB / APKS 场景需要。** 查看列表、帮助、版本及自动补全都不会下载工具。
 
 
 ## 设备与安装说明
@@ -159,22 +159,22 @@ Download and install these tools? [y/N]:
 
 更多环境配置、退出码和故障处理见[使用指南](docs/usage.md)。
 
-手册页随下一版本的 Homebrew/Bottle 和 Unix 安装提供（已发布的 0.1.1 不含手册）。本地构建后可运行 `bash install.sh --local`；若系统找不到手册，设置 `export MANPATH="$HOME/.local/share/man:${MANPATH:-}"`。自定义 `FERRI_DATA_DIR` 时将该路径替换为 `$FERRI_DATA_DIR/man`。
+Homebrew/Bottle 和 Unix 安装均提供手册页。本地构建后可运行 `bash install.sh --local`；若系统找不到手册，设置 `export MANPATH="$HOME/.local/share/man:${MANPATH:-}"`。自定义 `FERRIE_DATA_DIR` 时将该路径替换为 `$FERRIE_DATA_DIR/man`。
 
 ## 开发与贡献
 
-欢迎提交问题和改进。反馈安装问题时，请附上 Ferri 版本、电脑系统、包格式和错误输出。
+欢迎提交问题和改进。反馈安装问题时，请附上 Ferrie 版本、电脑系统、包格式和错误输出。
 
 从源码构建需要 Go 1.23+，普通用户使用发布包不需要 Go：
 
 ```sh
-go build -o bin/ferri .
-./bin/ferri --help
+go build -o bin/ferrie .
+./bin/ferrie --help
 go test ./...
 go vet ./...
 ```
 
-Windows 使用 `go build -o bin/ferri.exe .`。本地安装可运行 `bash install.sh --local` 或 `./install.ps1 -Local`。
+Windows 使用 `go build -o bin/ferrie.exe .`。本地安装可运行 `bash install.sh --local` 或 `./install.ps1 -Local`。
 
 [测试与开发说明](docs/usage.md#开发验证) · [发布流程](RELEASING.md)
 

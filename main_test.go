@@ -17,7 +17,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-    if os.Getenv("FERRI_TEST_JAVA") == "1" && len(os.Args) == 2 && os.Args[1] == "-version" {
+    if os.Getenv("FERRIE_TEST_JAVA") == "1" && len(os.Args) == 2 && os.Args[1] == "-version" {
         fmt.Fprintln(os.Stderr, `openjdk version "17.0.1"`)
         os.Exit(0)
     }
@@ -34,7 +34,7 @@ func fakeTool(t *testing.T, name string) string {
     t.Helper()
     path := filepath.Join(t.TempDir(), binaryName(name))
     if err := os.WriteFile(path, []byte("fixture"), 0o755); err != nil { t.Fatal(err) }
-    t.Setenv("FERRI_" + strings.ToUpper(name), path)
+    t.Setenv("FERRIE_" + strings.ToUpper(name), path)
     return path
 }
 
@@ -170,8 +170,8 @@ func TestBundleInstall(t *testing.T) {
     fakeTool(t, "adb")
     fakeTool(t, "bundletool")
     self, _ := os.Executable()
-    t.Setenv("FERRI_JAVA", self)
-    t.Setenv("FERRI_TEST_JAVA", "1")
+    t.Setenv("FERRIE_JAVA", self)
+    t.Setenv("FERRIE_TEST_JAVA", "1")
     for _, extension := range []string{".AAB", ".apks"} {
         a := testApp(t)
         var commands [][]string
@@ -204,8 +204,8 @@ func TestFailedBuildDoesNotInstall(t *testing.T) {
     fakeTool(t, "adb")
     fakeTool(t, "bundletool")
     self, _ := os.Executable()
-    t.Setenv("FERRI_JAVA", self)
-    t.Setenv("FERRI_TEST_JAVA", "1")
+    t.Setenv("FERRIE_JAVA", self)
+    t.Setenv("FERRIE_TEST_JAVA", "1")
     a := testApp(t)
     count := 0
     a.run = func(context.Context, bool, string, ...string) (string, error) { count++; return "", errors.New("failed") }
@@ -217,7 +217,7 @@ func TestDependenciesRequireConsent(t *testing.T) {
     // bundletool is searched in these homes; isolate from the developer's cache.
     t.Setenv("HOME", t.TempDir())
     t.Setenv("USERPROFILE", t.TempDir())
-    t.Setenv("FERRI_BUNDLETOOL", "")
+    t.Setenv("FERRIE_BUNDLETOOL", "")
     for _, answer := range []string{"", "\n", "n\n"} {
         a.in, a.reader, a.interactive = strings.NewReader(answer), nil, true
         if err := a.prepare("bundletool"); err == nil || !strings.Contains(err.Error(), "cancelled") { t.Fatal(err) }
@@ -237,8 +237,8 @@ func TestExistingDependencyNeedsNoConsent(t *testing.T) {
 
 func TestCompletionNeverInstallsTools(t *testing.T) {
     a := testApp(t)
-    t.Setenv("FERRI_ADB", filepath.Join(t.TempDir(), "missing"))
-    t.Setenv("FERRI_IOS", filepath.Join(t.TempDir(), "missing"))
+    t.Setenv("FERRIE_ADB", filepath.Join(t.TempDir(), "missing"))
+    t.Setenv("FERRIE_IOS", filepath.Join(t.TempDir(), "missing"))
     if err := a.execute([]string{"__devices"}); err != nil { t.Fatal(err) }
     if a.out.(*bytes.Buffer).Len() != 0 || a.err.(*bytes.Buffer).Len() != 0 { t.Fatal("Completion emitted errors or prompts") }
 }
@@ -280,7 +280,7 @@ func TestArchiveTraversal(t *testing.T) {
 
 func TestRealCommandFailure(t *testing.T) {
     runner := commandRunner(io.Discard, io.Discard)
-    if _, err := runner(context.Background(), true, "ferri-command-that-does-not-exist"); err == nil { t.Fatal("Missing tool accepted") }
+    if _, err := runner(context.Background(), true, "ferrie-command-that-does-not-exist"); err == nil { t.Fatal("Missing tool accepted") }
 }
 
 func TestVersionFile(t *testing.T) {
@@ -294,7 +294,7 @@ func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { retu
 func TestApprovedDependencyDownloadsOnceAndReusesCache(t *testing.T) {
     t.Setenv("HOME", t.TempDir())
     t.Setenv("USERPROFILE", t.TempDir())
-    t.Setenv("FERRI_BUNDLETOOL", "")
+    t.Setenv("FERRIE_BUNDLETOOL", "")
     var archive bytes.Buffer
     writer := zip.NewWriter(&archive)
     entry, _ := writer.Create("META-INF/MANIFEST.MF")
@@ -317,7 +317,7 @@ func TestApprovedDependencyDownloadsOnceAndReusesCache(t *testing.T) {
 }
 
 func TestVersionOutput(t *testing.T) {
-    const want = "ferri version 0.1.2 (2026-09-07)\nhttps://github.com/leo1394/homebrew-ferri\n"
+    const want = "ferrie version 0.2.1 (2026-09-07)\nhttps://github.com/leo1394/homebrew-ferrie\n"
     for _, argument := range []string{"--version", "version", "-v"} {
         a := testApp(t)
         if err := a.execute([]string{argument}); err != nil { t.Fatal(err) }

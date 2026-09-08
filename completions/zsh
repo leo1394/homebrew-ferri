@@ -1,7 +1,7 @@
-#compdef ferri
-_ferri() {
+#compdef ferrie
+_ferrie() {
     local -a devices
-    devices=("${(@f)$(ferri __devices 2>/dev/null)}")
+    devices=("${(@f)$(ferrie __devices 2>/dev/null)}")
     _arguments \
         '(-T --target)'{-T,--target}'[App package]:package:_files' \
         '--url[Package or installation page URL]:URL:' \
@@ -13,4 +13,4 @@ _ferri() {
         '(-v --version)'{-v,--version}'[Show version]' \
         '1:action:(version)'
 }
-_ferri "$@"
+_ferrie "$@"

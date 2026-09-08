@@ -65,8 +65,8 @@ func TestInstallFallbackConsent(t *testing.T) {
                 if ext == ".apks" || ext == ".aab" {
                     fakeTool(t, "bundletool")
                     self, _ := os.Executable()
-                    t.Setenv("FERRI_JAVA", self)
-                    t.Setenv("FERRI_TEST_JAVA", "1")
+                    t.Setenv("FERRIE_JAVA", self)
+                    t.Setenv("FERRIE_TEST_JAVA", "1")
                 }
                 path := filepath.Join(t.TempDir(), "app"+ext)
                 identityFixture(t, path)

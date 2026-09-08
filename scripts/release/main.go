@@ -26,14 +26,14 @@ func build() error {
     if err := os.MkdirAll("dist", 0o755); err != nil { return err }
     checksums := strings.Builder{}
     formula := strings.Builder{}
-    fmt.Fprintf(&formula, `class Ferri < Formula
+    fmt.Fprintf(&formula, `class Ferrie < Formula
   desc "Install Android and iOS apps from files or URLs"
-  homepage "https://github.com/leo1394/homebrew-ferri"
+  homepage "https://github.com/leo1394/homebrew-ferrie"
   version "%s"
   license "MIT"
 
   head do
-    url "https://github.com/leo1394/homebrew-ferri.git", branch: "master"
+    url "https://github.com/leo1394/homebrew-ferrie.git", branch: "master"
     depends_on "go" => :build
   end
 
@@ -46,7 +46,7 @@ func build() error {
         }
         for _, arch := range []string{"arm64", "amd64"} {
             if system == "windows" && arch != "amd64" { continue }
-            asset := "ferri_" + version + "_" + system + "_" + arch
+            asset := "ferrie_" + version + "_" + system + "_" + arch
             if system == "windows" { asset += ".exe" }
             cmd := exec.Command("go", "build", "-trimpath", "-buildvcs=false", "-ldflags=-s -w", "-o", filepath.Join("dist", asset), ".")
             cmd.Env = append(os.Environ(), "GOOS=" + system, "GOARCH=" + arch, "CGO_ENABLED=0")
@@ -60,7 +60,7 @@ func build() error {
                 scope := "on_arm"
                 if arch == "amd64" { scope = "on_intel" }
                 fmt.Fprintf(&formula, `    %s do
-      url "https://github.com/leo1394/homebrew-ferri/releases/download/v%s/%s", using: :nounzip
+      url "https://github.com/leo1394/homebrew-ferrie/releases/download/v%s/%s", using: :nounzip
       sha256 "%s"
     end
 `, scope, version, asset, digest)
@@ -73,32 +73,32 @@ func build() error {
     if build.head?
       system "go", "build", *std_go_args(ldflags: "-s -w"), "."
     else
-      bin.install Dir["ferri_*"][0] => "ferri"
+      bin.install Dir["ferrie_*"][0] => "ferrie"
     end
-    chmod 0755, bin/"ferri"
-    generate_completions_from_executable(bin/"ferri", "__completion")
+    chmod 0755, bin/"ferrie"
+    generate_completions_from_executable(bin/"ferrie", "__completion")
     man1.mkpath
-    (man1/"ferri.1").write Utils.safe_popen_read(bin/"ferri", "__man")
+    (man1/"ferrie.1").write Utils.safe_popen_read(bin/"ferrie", "__man")
     pwsh_completion.mkpath
-    (pwsh_completion/"ferri.ps1").write Utils.safe_popen_read(bin/"ferri", "__completion", "powershell")
+    (pwsh_completion/"ferrie.ps1").write Utils.safe_popen_read(bin/"ferrie", "__completion", "powershell")
   end
 
   test do
 `)
-    fmt.Fprintf(&formula, `    output = shell_output("#{bin}/ferri --version")
-    assert_match "ferri version %s (", output
-    assert_match(%%r{\(\d{4}-\d{2}-\d{2}\)\nhttps://github.com/leo1394/homebrew-ferri\n\z}, output)
+    fmt.Fprintf(&formula, `    output = shell_output("#{bin}/ferrie --version")
+    assert_match "ferrie version %s (", output
+    assert_match(%%r{\(\d{4}-\d{2}-\d{2}\)\nhttps://github.com/leo1394/homebrew-ferrie\n\z}, output)
 `, version)
-    fmt.Fprint(&formula, `    assert_match "--target", shell_output("#{bin}/ferri --help")
-    assert_match "Did you mean '--target'", shell_output("#{bin}/ferri --targte app.apk 2>&1", 2)
-    assert_match "FERRI", (man1/"ferri.1").read
-    assert_path_exists bash_completion/"ferri"
-    assert_path_exists zsh_completion/"_ferri"
-    assert_path_exists fish_completion/"ferri.fish"
-    assert_path_exists pwsh_completion/"ferri.ps1"
+    fmt.Fprint(&formula, `    assert_match "--target", shell_output("#{bin}/ferrie --help")
+    assert_match "Did you mean '--target'", shell_output("#{bin}/ferrie --targte app.apk 2>&1", 2)
+    assert_match "FERRIE", (man1/"ferrie.1").read
+    assert_path_exists bash_completion/"ferrie"
+    assert_path_exists zsh_completion/"_ferrie"
+    assert_path_exists fish_completion/"ferrie.fish"
+    assert_path_exists pwsh_completion/"ferrie.ps1"
   end
 end
 `)
     if err := os.WriteFile("dist/SHA256SUMS", []byte(checksums.String()), 0o644); err != nil { return err }
-    return os.WriteFile("Formula/ferri.rb", []byte(formula.String()), 0o644)
+    return os.WriteFile("Formula/ferrie.rb", []byte(formula.String()), 0o644)
 }

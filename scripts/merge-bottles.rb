@@ -4,7 +4,7 @@ require "digest"
 require "fileutils"
 
 root, directory, repository, version = ARGV
-abort "invalid repository/version" unless repository&.match?(%r{\A[A-Za-z0-9_.-]+/homebrew-ferri\z}) && version&.match?(/\A\d+\.\d+\.\d+\z/)
+abort "invalid repository/version" unless repository&.match?(%r{\A[A-Za-z0-9_.-]+/homebrew-ferrie\z}) && version&.match?(/\A\d+\.\d+\.\d+\z/)
 url = "https://github.com/#{repository}/releases/download/v#{version}"
 tags = {}
 files = Dir[File.join(directory, "*.bottle.json")]
@@ -17,15 +17,15 @@ files.each do |file|
   abort "unexpected formula count" unless contents.length == 1
   data = contents.values.first
   formula, bottle = data.fetch("formula"), data.fetch("bottle")
-  abort "wrong formula/version" unless formula["name"] == "ferri" && formula["pkg_version"] == version
+  abort "wrong formula/version" unless formula["name"] == "ferrie" && formula["pkg_version"] == version
   abort "wrong bottle URL/rebuild" unless bottle["root_url"] == url && bottle["rebuild"] == 0
   abort "expected one platform per bottle" unless bottle.fetch("tags").length == 1
   bottle.fetch("tags").each do |tag, details|
     abort "unexpected or duplicate platform" unless %w[arm64_sequoia sequoia].include?(tag) && !tags.key?(tag)
     cellar = details["cellar"] || bottle["cellar"]
     abort "bottle is not relocatable" unless %w[any any_skip_relocation].include?(cellar)
-    local_name = "ferri--#{version}.#{tag}.bottle.tar.gz"
-    remote_name = "ferri-#{version}.#{tag}.bottle.tar.gz"
+    local_name = "ferrie--#{version}.#{tag}.bottle.tar.gz"
+    remote_name = "ferrie-#{version}.#{tag}.bottle.tar.gz"
     abort "unexpected filename" unless details["local_filename"] == local_name && details["filename"] == remote_name
     archive = File.join(directory, local_name)
     sha = details.fetch("sha256")
@@ -35,7 +35,7 @@ files.each do |file|
   end
 end
 abort "missing macOS architecture" unless tags.keys.sort == %w[arm64_sequoia sequoia]
-path = File.join(root, "Formula/ferri.rb")
+path = File.join(root, "Formula/ferrie.rb")
 text = File.read(path)
 abort "wrong Formula version" unless text.include?("  version \"#{version}\"")
 text = text.sub(/\n  bottle do\n.*?^  end\n/m, "")

@@ -14,7 +14,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: ferri-release-${{ inputs.release_tag || github.ref_name }}
+  group: ferrie-release-${{ inputs.release_tag || github.ref_name }}
   cancel-in-progress: false
 env:
   RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
@@ -43,9 +43,9 @@ jobs:
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "Invalid release tag: $RELEASE_TAG"
           [[ "$RELEASE_TAG" == "v$(cat VERSION.txt)" ]] || fail "Tag does not match VERSION.txt"
           # Checkout may map the peeled commit to a local tag. Inspect a separate remote ref.
-          git fetch --no-tags origin "+refs/tags/$RELEASE_TAG:refs/ferri-release/tag"
-          [[ "$(git cat-file -t refs/ferri-release/tag)" == tag ]] || fail "Remote release tag must be annotated"
-          source=$(git rev-parse 'refs/ferri-release/tag^{commit}')
+          git fetch --no-tags origin "+refs/tags/$RELEASE_TAG:refs/ferrie-release/tag"
+          [[ "$(git cat-file -t refs/ferrie-release/tag)" == tag ]] || fail "Remote release tag must be annotated"
+          source=$(git rev-parse 'refs/ferrie-release/tag^{commit}')
           [[ "$source" == "$(git rev-parse HEAD)" ]] || fail "Remote tag does not match checked-out source"
           echo "source=$source" >> "$GITHUB_OUTPUT"
       - name: Build deterministic binaries
@@ -54,11 +54,11 @@ jobs:
           set -euo pipefail
           go test ./...
           go run ./scripts/release
-          git diff --exit-code -- Formula/ferri.rb
+          git diff --exit-code -- Formula/ferrie.rb
       - name: Upload immutable release assets
         env:
           GH_TOKEN: ${{ github.token }}
-        run: GITHUB_REF_NAME="$RELEASE_TAG" bash scripts/release-assets.sh dist/ferri_* dist/SHA256SUMS THIRD-PARTY-NOTICES.md
+        run: GITHUB_REF_NAME="$RELEASE_TAG" bash scripts/release-assets.sh dist/ferrie_* dist/SHA256SUMS THIRD-PARTY-NOTICES.md
   bottles:
     needs: release
     if: inputs.bottles
@@ -106,27 +106,27 @@ jobs:
           RELEASE_SOURCE: ${{ needs.release.outputs.source }}
         run: |
           set -euo pipefail
-          cp Formula/ferri.rb "$RUNNER_TEMP/ferri-bottle.rb"
-          git restore Formula/ferri.rb
+          cp Formula/ferrie.rb "$RUNNER_TEMP/ferrie-bottle.rb"
+          git restore Formula/ferrie.rb
           git fetch origin master
           source=$RELEASE_SOURCE
           changes=$(git diff --name-only "$source" origin/master)
           while IFS= read -r path; do
             case "$path" in
-              ""|Formula/ferri.rb|.github/workflows/release.yml|RELEASING.md|tests/release_tag_test.sh) ;;
+              ""|Formula/ferrie.rb|.github/workflows/release.yml|RELEASING.md|tests/release_tag_test.sh) ;;
               .gitignore|.idea/*|README.md|README-EN.md) ;;
               scripts/merge-bottles.rb|tests/bottle_metadata_test.rb) ;;
               *) echo "Source changed since release: $path" >&2; exit 1 ;;
             esac
           done <<< "$changes"
-          git show "$source:Formula/ferri.rb" | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/source-formula"
-          git show origin/master:Formula/ferri.rb | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/master-formula"
+          git show "$source:Formula/ferrie.rb" | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/source-formula"
+          git show origin/master:Formula/ferrie.rb | sed '/^  bottle do$/,/^  end$/d; /^[[:space:]]*$/d' > "$RUNNER_TEMP/master-formula"
           cmp "$RUNNER_TEMP/source-formula" "$RUNNER_TEMP/master-formula"
           git checkout -B master origin/master
-          cp "$RUNNER_TEMP/ferri-bottle.rb" Formula/ferri.rb
-          if git diff --quiet -- Formula/ferri.rb; then exit 0; fi
+          cp "$RUNNER_TEMP/ferrie-bottle.rb" Formula/ferrie.rb
+          if git diff --quiet -- Formula/ferrie.rb; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Formula/ferri.rb
-          git commit -m "Publish Ferri $RELEASE_TAG macOS bottles"
+          git add Formula/ferrie.rb
+          git commit -m "Publish Ferrie $RELEASE_TAG macOS bottles"
           git push origin HEAD:refs/heads/master

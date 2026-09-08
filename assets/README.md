@@ -1,15 +1,15 @@
-# Ferri brand assets
+# Ferrie brand assets
 
-`ferri-otter-line.png` is the approved logo: a full-body otter in side profile, drawn with simple blue contours and carrying a small app installation tile. This version uses a white background, not transparency. Both READMEs now use the matching `ferri-banner-zh.png` and `ferri-banner-en.png` banners (2172 × 724).
+`ferrie-otter-line.png` is the approved logo: a full-body otter in side profile, drawn with simple blue contours and carrying a small app installation tile. This version uses a white background, not transparency. Both READMEs now use the matching `ferrie-banner-zh.png` and `ferrie-banner-en.png` banners (2172 × 724).
 
-Earlier concepts are retained as `ferri-otter.png`, `ferri-logo.png`, and `ferri-logo-install.png`.
+Earlier concepts are retained as `ferrie-otter.png`, `ferrie-logo.png`, and `ferrie-logo-install.png`.
 
 Created with the built-in imagegen tool. The final image is saved without post-processing. Preserve its aspect ratio and clear space.
 
 ## Design prompt
 
 ```text
-Redesign the attached Ferri otter mascot according to this new direction: SIDE PROFILE, FULL BODY, SIMPLE LINE ART.
+Redesign the attached Ferrie otter mascot according to this new direction: SIDE PROFILE, FULL BODY, SIMPLE LINE ART.
 Retain only the species and gentle capable character from the reference. Entirely replace the front-facing colored cartoon portrait.
 A graceful otter in strict side profile facing right, sitting naturally on its haunches, with a long tapered tail sweeping along the ground behind it to the left. Show the ENTIRE animal including head, torso, forepaws, hind foot and tail. Small rounded ear, short recognizable otter muzzle, one tiny dot eye. Natural elegant proportions, small head relative to body, not chibi, not a teddy bear.
 One forepaw gently carries a small rounded-square app tile against the chest; the tile has a tiny simple downward arrow. The tile is a subtle small accent, not the main silhouette. Keep the animal dominant.
@@ -30,11 +30,11 @@ Generated with the built-in imagegen tool and copied into this directory without
 ### Chinese prompt
 
 ```text
-Create a polished horizontal GitHub README product banner for Ferri, 3:1 aspect ratio. Image 1 is the APPROVED LOGO: preserve its exact simple blue monoline side-profile full-body otter with tail and small app tile. Image 2 is a layout reference only: use its minimal spacious horizontal brand composition, not its text or logo. Pure white background, logo on left occupying about one third, large dark navy wordmark "Ferri" on right, with smaller Chinese tagline beneath it exactly "一条命令，将 App 安装到设备。" Refined clean sans-serif typography, generous spacing, restrained blue and navy palette, no gradients, shadows, frames, extra icons, scene, or decorative shapes. Entire otter visible. Only those two text strings. Professional concise developer tool identity.
+Create a polished horizontal GitHub README product banner for Ferrie, 3:1 aspect ratio. Image 1 is the APPROVED LOGO: preserve its exact simple blue monoline side-profile full-body otter with tail and small app tile. Image 2 is a layout reference only: use its minimal spacious horizontal brand composition, not its text or logo. Pure white background, logo on left occupying about one third, large dark navy wordmark "Ferrie" on right, with smaller Chinese tagline beneath it exactly "一条命令，将 App 安装到设备。" Refined clean sans-serif typography, generous spacing, restrained blue and navy palette, no gradients, shadows, frames, extra icons, scene, or decorative shapes. Entire otter visible. Only those two text strings. Professional concise developer tool identity.
 ```
 
 ### English prompt
 
 ```text
-Edit this Ferri product banner. Change ONLY the Chinese tagline to the English text exactly: "Install your app on a device with one command." Keep the full-body side-profile blue monoline otter, app tile, large navy Ferri wordmark, pure white background, proportions, spacing and 3:1 horizontal canvas unchanged. Fit the English tagline neatly on one line beneath Ferri using smaller clean sans-serif type. No other changes.
+Edit this Ferrie product banner. Change ONLY the Chinese tagline to the English text exactly: "Install your app on a device with one command." Keep the full-body side-profile blue monoline otter, app tile, large navy Ferrie wordmark, pure white background, proportions, spacing and 3:1 horizontal canvas unchanged. Fit the English tagline neatly on one line beneath Ferrie using smaller clean sans-serif type. No other changes.
 ```

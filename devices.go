@@ -43,7 +43,7 @@ func (a *app) discover(kind string, bootstrap, quiet bool) ([]device, error) {
         if backend == "ios" { name, args = "ios", []string{"list"} }
         tool, err := a.tool(name, bootstrap)
         if err == nil && tool == "" {
-            if !quiet { fmt.Fprintf(a.err, "Missing %s; run ferri --target PATH to review and approve required tools.\n", name) }
+            if !quiet { fmt.Fprintf(a.err, "Missing %s; run ferrie --target PATH to review and approve required tools.\n", name) }
             continue
         }
         var output string
@@ -96,7 +96,7 @@ func (a *app) install(target string, selected device) error {
             if err != nil { return err }
             bundle, err := a.tool("bundletool", false)
             if err != nil { return err }
-            folder, err := os.MkdirTemp("", "ferri-")
+            folder, err := os.MkdirTemp("", "ferrie-")
             if err != nil { return err }
             defer os.RemoveAll(folder)
             apks := target

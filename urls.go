@@ -166,7 +166,7 @@ func (a *app) selectPlatform() (string, error) {
 func (r *urlResolver) savePackage(body io.Reader, length int64, host string) (urlSource, error) {
     empty := urlSource{}
     if length > maxPackageBytes { return empty, errors.New("Package exceeds the 8 GiB download limit") }
-    dir, err := os.MkdirTemp("", "ferri-download-*")
+    dir, err := os.MkdirTemp("", "ferrie-download-*")
     if err != nil { return empty, err }
     keep := false
     defer func() { if !keep { os.RemoveAll(dir) } }()
@@ -225,7 +225,7 @@ func storePlatform(u *url.URL) string {
 
 func (a *app) openStore(source urlSource, id string) error {
     if source.platform == "ios" {
-        return errors.New("App Store links do not provide a downloadable signed IPA. Open this app's page in App Store on the iPhone/iPad to install; for Ferri installation, obtain a signed IPA and use --target PATH or --url DIRECT_IPA_URL")
+        return errors.New("App Store links do not provide a downloadable signed IPA. Open this app's page in App Store on the iPhone/iPad to install; for Ferrie installation, obtain a signed IPA and use --target PATH or --url DIRECT_IPA_URL")
     }
     u, _ := url.Parse(source.store)
     packageID := u.Query().Get("id")
@@ -240,7 +240,7 @@ func (a *app) openStore(source urlSource, id string) error {
     output, err := a.run(a.ctx, true, adb, "-s", selected.id, "shell", "am", "start", "-W", "-a", "android.intent.action.VIEW", "-d", "market://details?id="+packageID, "-p", "com.android.vending")
     if err != nil { return err }
     if !strings.Contains(output, "Status: ok") || strings.Contains(output, "Error:") || strings.Contains(output, "Exception") { return errors.New("Could not open Google Play; verify that it is installed and enabled on this device") }
-    fmt.Fprintln(a.out, "Opened Google Play on the selected device. Complete installation on the device; Ferri has not installed the app.")
+    fmt.Fprintln(a.out, "Opened Google Play on the selected device. Complete installation on the device; Ferrie has not installed the app.")
     return nil
 }
 

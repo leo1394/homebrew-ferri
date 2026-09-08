@@ -5,7 +5,7 @@ import (
     "strings"
 )
 
-//go:embed man/ferri.1
+//go:embed man/ferrie.1
 var manualTemplate string
 
 func manual() string {

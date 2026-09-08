@@ -15,20 +15,20 @@ import (
     "time"
 )
 
-const version = "0.1.2"
+const version = "0.2.1"
 const versionDate = "2026-09-07"
-const repositoryURL = "https://github.com/leo1394/homebrew-ferri"
+const repositoryURL = "https://github.com/leo1394/homebrew-ferrie"
 
 var options = []string{"--target", "--url", "--android", "--ios", "--list", "--device", "--help", "version", "--version"}
 
-const help = `Ferri — install Android/iOS apps on connected devices.
+const help = `Ferrie — install Android/iOS apps on connected devices.
 
 Usage:
-  ferri --target PATH [--device ID]
-  ferri --url URL [--android | --ios] [--device ID]
-  ferri --list
-  ferri --help
-  ferri version | --version
+  ferrie --target PATH [--device ID]
+  ferrie --url URL [--android | --ios] [--device ID]
+  ferrie --list
+  ferrie --help
+  ferrie version | --version
 
 Options:
   -T, --target PATH  Install an APK, APKS, AAB or IPA
@@ -44,7 +44,7 @@ Try updating first to preserve app data. If installation fails, uninstall/retry
 requires an existing app with the same ID and your confirmation of data loss.
 Multiple compatible devices require selection and confirmation.
 Non-interactive sessions with multiple devices must use --device ID.
-Missing device tools are installed into ~/.ferri only after your confirmation.
+Missing device tools are installed into ~/.ferrie only after your confirmation.
 No language runtime needed. --list and completion never download tools.
 AAB/APKS additionally use a managed Java runtime and bundletool.
 `
@@ -99,7 +99,7 @@ func parse(args []string) (arguments, error) {
         if seen[key] { return result, usageError{"Repeated argument: " + key} }
         seen[key] = true
     }
-    if result.action == "" && result.target == "" && result.url == "" { return result, usageError{"Use --target PATH, --url URL or --list; see ferri --help"} }
+    if result.action == "" && result.target == "" && result.url == "" { return result, usageError{"Use --target PATH, --url URL or --list; see ferrie --help"} }
     if result.action != "" && (result.target != "" || result.url != "" || result.platform != "" || result.device != "") { return result, usageError{"Do not combine --list/--help/--version with installation arguments"} }
     if result.target != "" && result.url != "" { return result, usageError{"Choose only one of --target and --url"} }
     if result.platform != "" && result.url == "" { return result, usageError{"--android/--ios requires --url"} }
@@ -186,7 +186,7 @@ func (a *app) execute(args []string) error {
     if err != nil { return err }
     switch parsed.action {
     case "--help": fmt.Fprint(a.out, help); return nil
-    case "--version": fmt.Fprintf(a.out, "ferri version %s (%s)\n%s\n", version, versionDate, repositoryURL); return nil
+    case "--version": fmt.Fprintf(a.out, "ferrie version %s (%s)\n%s\n", version, versionDate, repositoryURL); return nil
     case "--list":
         devices, err := a.discover("", false, false)
         a.printDevices(devices)
@@ -265,8 +265,8 @@ func main() {
     defer cancel()
     home, err := os.UserHomeDir()
     if err != nil { fmt.Fprintln(os.Stderr, err); os.Exit(1) }
-    cache := os.Getenv("FERRI_HOME")
-    if cache == "" { cache = filepath.Join(home, ".ferri") }
+    cache := os.Getenv("FERRIE_HOME")
+    if cache == "" { cache = filepath.Join(home, ".ferrie") }
     stat, _ := os.Stdin.Stat()
     a := app{ctx: ctx, in: os.Stdin, out: os.Stdout, err: os.Stderr,
              interactive: stat != nil && stat.Mode()&os.ModeCharDevice != 0,
@@ -274,7 +274,7 @@ func main() {
     // Stop even while waiting for interactive input.
     go func() { <-ctx.Done(); time.Sleep(100*time.Millisecond); os.Exit(130) }()
     if err := a.execute(os.Args[1:]); err != nil {
-        fmt.Fprintln(os.Stderr, "ferri:", err)
+        fmt.Fprintln(os.Stderr, "ferrie:", err)
         if ctx.Err() != nil { os.Exit(130) }
         var usage usageError
         if errors.As(err, &usage) { os.Exit(2) }

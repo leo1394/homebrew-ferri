@@ -1,4 +1,4 @@
-module github.com/leo1394/homebrew-ferri
+module github.com/leo1394/homebrew-ferrie
 
 go 1.23
 

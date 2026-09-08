@@ -46,9 +46,9 @@ expect_failure 'Remote release tag must be annotated'
 # Exercise the same source-change guard used before committing the bottle Formula.
 awk '/          while IFS= read -r path/ { active=1 } active { sub(/^          /, ""); print } active && /done <<< / { exit }' "$root/.github/workflows/release.yml" > "$scratch/guard.sh"
 export changes
-changes=$(printf '%s\n' .gitignore .idea/.gitignore .idea/misc.xml README.md README-EN.md .github/workflows/release.yml RELEASING.md tests/release_tag_test.sh Formula/ferri.rb scripts/merge-bottles.rb tests/bottle_metadata_test.rb)
+changes=$(printf '%s\n' .gitignore .idea/.gitignore .idea/misc.xml README.md README-EN.md .github/workflows/release.yml RELEASING.md tests/release_tag_test.sh Formula/ferrie.rb scripts/merge-bottles.rb tests/bottle_metadata_test.rb)
 bash "$scratch/guard.sh"
-for changes in main.go go.mod go.sum VERSION.txt completions/ferri.bash scripts/release/main.go scripts/release-bottles.sh; do
+for changes in main.go go.mod go.sum VERSION.txt completions/ferrie.bash scripts/release/main.go scripts/release-bottles.sh; do
     if bash "$scratch/guard.sh" > "$scratch/error" 2>&1; then
         echo "Unexpectedly accepted changed source: $changes" >&2; exit 1
     fi

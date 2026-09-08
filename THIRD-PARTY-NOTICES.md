@@ -1,6 +1,6 @@
 # Third-party notices
 
-These Go libraries are compiled into Ferri and require no additional runtime installation.
+These Go libraries are compiled into Ferrie and require no additional runtime installation.
 
 ## github.com/shogo82148/androidbinary@v1.0.5
 
