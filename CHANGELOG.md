@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1 - 2026-09-08
+
+- rename `ferri` to `ferrie`
+
+
 ## 0.1.2 - 2026-09-07
 
 - 优化man文档输出
